@@ -1,0 +1,5 @@
+nltk
+numpy
+textblob
+tensorflow
+scikit-learn
