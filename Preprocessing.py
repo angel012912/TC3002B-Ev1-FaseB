@@ -44,12 +44,10 @@ class Preprocessing:
         self.sentences = list(filter(lambda x: x.strip(), self.current_text.split('.')))
         return self.sentences
 
-    # Lemmatization
     def lemmatize_words(self):
         self.word_list = [[self.lemmatizer.lemmatize(word) for word in sentence] for sentence in self.word_list]
         return self.word_list
 
-    # N-grams
     def create_n_grams(self, n):
         self.n_grams = []
         for sentence in self.word_list:

@@ -12,22 +12,23 @@ from pprint import pprint
 class Dictionary:
 
     def __init__(self):
-        self.dictionary = ''
+        self.dictionary = {}
         self.current_text = ''
         self.preprocess_module = Preprocessing()
 
     # Document Reading Function
-    def text_reading(self, text_path):
-        file = open(text_path, "r")
+    def text_reading(self, folder_path, text_path):
+        file = open(folder_path+"/"+text_path, "r")
         content = file.read()
         self.current_text = content
         self.preprocess_data()
+        self.update_dictionary(text_path)
         file.close()
     
     def folder_text_reading(self, folder_path):
-        for file in os.listdir(folder_path):
-            if file.endswith(".txt"):
-                self.text_reading(folder_path+"/"+file)
+        for file_path in os.listdir(folder_path):
+            if file_path.endswith(".txt"):
+                self.text_reading(folder_path, file_path)
 
     def preprocess_data(self):
         self.preprocess_module.set_text(self.current_text)
@@ -37,6 +38,8 @@ class Dictionary:
         self.preprocess_module.lemmatize_words()
         self.preprocess_module.create_n_grams(3)
     
-    # Dictionary update
+    def update_dictionary(self, text_path):
+        self.dictionary[text_path] = self.preprocess_module.n_grams
+        return self.dictionary
 
     
