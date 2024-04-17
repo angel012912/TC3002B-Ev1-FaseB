@@ -7,6 +7,7 @@
 # Libraries
 import os
 from Preprocessing import Preprocessing
+from pprint import pprint
 
 class Dictionary:
 
@@ -28,11 +29,15 @@ class Dictionary:
             if file.endswith(".txt"):
                 self.text_reading(folder_path+"/"+file)
 
-    # Preprocess data (Module utilization)
     def preprocess_data(self):
         self.preprocess_module.set_text(self.current_text)
+        self.preprocess_module.to_lower_without_punctuation()
+        self.preprocess_module.sentence_separation()
         self.preprocess_module.stopword_removal()
-
+        self.preprocess_module.lemmatize_words()
+        self.preprocess_module.create_n_grams(3)
+        pprint(self.preprocess_module.n_grams)
+    
     # Dictionary update
 
     
