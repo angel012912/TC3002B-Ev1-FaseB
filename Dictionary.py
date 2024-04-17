@@ -32,11 +32,7 @@ class Dictionary:
 
     def preprocess_data(self):
         self.preprocess_module.set_text(self.current_text)
-        self.preprocess_module.to_lower_without_punctuation()
-        self.preprocess_module.sentence_separation()
-        self.preprocess_module.stopword_removal()
-        self.preprocess_module.lemmatize_words()
-        self.preprocess_module.create_n_grams(3)
+        self.preprocess_module.preprocess_data()
     
     def update_dictionary(self, text_path):
         self.dictionary[text_path] = self.preprocess_module.n_grams

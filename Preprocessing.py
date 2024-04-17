@@ -6,7 +6,8 @@
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
- 
+from nltk.util import ngrams
+
 
 class Preprocessing:
     
@@ -53,6 +54,14 @@ class Preprocessing:
         for sentence in self.word_list:
             sentence_n_grams = []
             for i in range(len(sentence)-n+1):
-                sentence_n_grams.append(sentence[i:i+n])
-            self.n_grams.append(sentence_n_grams)
+                sentence_n_grams.append(tuple(sentence[i:i+n]))
+            self.n_grams.append(sentence_n_grams) if sentence_n_grams else None
+        return self.n_grams
+    
+    def preprocess_data(self):
+        self.to_lower_without_punctuation()
+        self.sentence_separation()
+        self.stopword_removal()
+        self.lemmatize_words()
+        self.create_n_grams(3)
         return self.n_grams
