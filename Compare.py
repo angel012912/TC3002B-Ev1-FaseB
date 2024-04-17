@@ -50,8 +50,6 @@ class Compare:
         self.preprocess_data()
         for key in self.dictionary:
             similarities_matrix = self.get_similarity_matrix(self.dictionary[key], self.text_n_grams)
-            print("--------------------")
-            pprint(similarities_matrix)
             mean_score = 0
             for sentence in similarities_matrix:
                 sentence_score = max(sentence)
