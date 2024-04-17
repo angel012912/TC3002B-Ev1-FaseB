@@ -49,10 +49,12 @@ class Preprocessing:
         self.word_list = [[self.lemmatizer.lemmatize(word) for word in sentence] for sentence in self.word_list]
         return self.word_list
 
-    # N-grams - TODO: Check if this is the correct way to create n-grams
+    # N-grams
     def create_n_grams(self, n):
         self.n_grams = []
         for sentence in self.word_list:
+            sentence_n_grams = []
             for i in range(len(sentence)-n+1):
-                self.n_grams.append(sentence[i:i+n])
+                sentence_n_grams.append(sentence[i:i+n])
+            self.n_grams.append(sentence_n_grams)
         return self.n_grams

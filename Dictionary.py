@@ -36,7 +36,6 @@ class Dictionary:
         self.preprocess_module.stopword_removal()
         self.preprocess_module.lemmatize_words()
         self.preprocess_module.create_n_grams(3)
-        pprint(self.preprocess_module.n_grams)
     
     # Dictionary update
 
