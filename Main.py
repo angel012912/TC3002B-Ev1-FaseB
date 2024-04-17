@@ -16,12 +16,21 @@ class Main:
             self.dictionary.folder_text_reading(path)
         else:
             self.dictionary.text_reading(path)
+        self.compare_module = Compare(self.dictionary.dictionary)
     
     def compare(self, text_path):
-        compare = Compare(self.dictionary.dictionary)
-        return compare.compare(text_path)
+        return self.compare_module.compare(text_path)
+    
+    def compare_folder(self, folder_path):
+        result = {}
+        for file in os.listdir(folder_path):
+            if file.endswith(".txt"):
+                file_path = os.path.join(folder_path, file)
+                file_comparation = self.compare_module.compare(file_path)
+                result[file] = file_comparation
+        return result
 
 if __name__ == '__main__':
     main = Main("/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/Data")
-    result = main.compare('text_to_compare.txt')
+    result = main.compare_folder('/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/TestData')
     pprint(result)

@@ -48,6 +48,7 @@ class Compare:
     def compare(self, text_path):
         self.read_text(text_path)
         self.preprocess_data()
+        self.is_plagiarism = False
         for key in self.dictionary:
             similarities_matrix = self.get_similarity_matrix(self.dictionary[key], self.text_n_grams)
             mean_score = 0
