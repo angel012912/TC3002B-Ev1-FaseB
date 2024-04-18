@@ -49,13 +49,16 @@ class Preprocessing:
         self.word_list = [[self.lemmatizer.lemmatize(word) for word in sentence] for sentence in self.word_list]
         return self.word_list
 
-    def create_n_grams(self, n):
+    def create_n_grams(self, n_range):
         self.n_grams = []
-        for sentence in self.word_list:
-            sentence_n_grams = []
-            for i in range(len(sentence)-n+1):
-                sentence_n_grams.append(tuple(sentence[i:i+n]))
-            self.n_grams.append(sentence_n_grams) if sentence_n_grams else None
+        for n in n_range:
+            ngram_list = []
+            for sentence in self.word_list:
+                sentence_n_grams = []
+                for i in range(len(sentence)-n+1):
+                    sentence_n_grams.append(tuple(sentence[i:i+n]))
+                ngram_list.append(sentence_n_grams) if sentence_n_grams else None
+            self.n_grams.append(ngram_list)
         return self.n_grams
     
     def preprocess_data(self):
@@ -63,5 +66,5 @@ class Preprocessing:
         self.sentence_separation()
         self.stopword_removal()
         self.lemmatize_words()
-        self.create_n_grams(3)
+        self.create_n_grams(range(2, 6))
         return self.n_grams

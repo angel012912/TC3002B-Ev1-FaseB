@@ -49,14 +49,23 @@ class Compare:
         self.preprocess_data()
         possible_plagiarism_texts = []
         for key in self.dictionary:
-            similarities_matrix = self.get_similarity_matrix(self.dictionary[key], self.text_n_grams)
-            mean_score = 0
-            for sentence in similarities_matrix:
-                sentence_score = max(sentence)
-                mean_score += sentence_score
-            mean_score = mean_score / len(similarities_matrix)
-            if mean_score >= 0.15:
-                plagiarism_info = (key, mean_score)
+            n_gram_scores = []
+            n_gram_length_sum = 0
+            for n_gram_index in range(len(self.text_n_grams)):
+                original_text_ngrams = self.dictionary[key][n_gram_index]
+                actual_text_ngrams = self.text_n_grams[n_gram_index]
+                n_gram_length = len(actual_text_ngrams[0][0])
+                similarities_matrix = self.get_similarity_matrix(original_text_ngrams, actual_text_ngrams)
+                mean_score = 0
+                for sentence in similarities_matrix:
+                    sentence_score = max(sentence)
+                    mean_score += sentence_score
+                mean_score = (mean_score / len(similarities_matrix)) * n_gram_length
+                n_gram_length_sum += n_gram_length
+                n_gram_scores.append(mean_score)
+            final_score = sum(n_gram_scores) / n_gram_length_sum
+            if final_score >= 0.2:
+                plagiarism_info = (key, round(final_score, 2))
                 possible_plagiarism_texts.append(plagiarism_info)
         
         return (True, possible_plagiarism_texts) if possible_plagiarism_texts else (False, "No plagiarism detected")
