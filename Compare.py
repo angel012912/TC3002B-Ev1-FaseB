@@ -48,6 +48,7 @@ class Compare:
         self.read_text(text_path)
         self.preprocess_data()
         possible_plagiarism_texts = []
+        sum_scores = 0
         for key in self.dictionary:
             n_gram_scores = []
             n_gram_length_sum = 0
@@ -63,9 +64,10 @@ class Compare:
                 mean_score = (mean_score / len(similarities_matrix)) * n_gram_length
                 n_gram_length_sum += n_gram_length
                 n_gram_scores.append(mean_score)
-            final_score = sum(n_gram_scores) / n_gram_length_sum
-            if final_score >= 0.2:
-                plagiarism_info = (key, round(final_score, 2))
+            final_score = round(sum(n_gram_scores) / n_gram_length_sum, 2)
+            if final_score > 0.1:
+                plagiarism_info = (key, final_score)
                 possible_plagiarism_texts.append(plagiarism_info)
+                sum_scores += final_score
         
-        return (True, possible_plagiarism_texts) if possible_plagiarism_texts else (False, "No plagiarism detected")
+        return (True, sum_scores, possible_plagiarism_texts) if (sum_scores >= 0.25) else (False, "No plagiarism detected")
