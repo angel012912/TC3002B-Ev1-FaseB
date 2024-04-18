@@ -8,7 +8,6 @@ from pprint import pprint
 class Compare:
 
     def __init__(self, dictionary):
-        self.is_plagiarism = False
         self.textToCompare = ''
         self.dictionary = dictionary
         self.text_n_grams = []
@@ -48,7 +47,7 @@ class Compare:
     def compare(self, text_path):
         self.read_text(text_path)
         self.preprocess_data()
-        self.is_plagiarism = False
+        possible_plagiarism_texts = []
         for key in self.dictionary:
             similarities_matrix = self.get_similarity_matrix(self.dictionary[key], self.text_n_grams)
             mean_score = 0
@@ -56,7 +55,8 @@ class Compare:
                 sentence_score = max(sentence)
                 mean_score += sentence_score
             mean_score = mean_score / len(similarities_matrix)
-            if mean_score >= 0.6:
-                self.is_plagiarism = True
-                return (self.is_plagiarism, key, mean_score)
-        return (self.is_plagiarism, None, None)
+            if mean_score >= 0.15:
+                plagiarism_info = (key, mean_score)
+                possible_plagiarism_texts.append(plagiarism_info)
+        
+        return (True, possible_plagiarism_texts) if possible_plagiarism_texts else (False, "No plagiarism detected")
