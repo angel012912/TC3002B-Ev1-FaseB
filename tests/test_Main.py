@@ -34,8 +34,8 @@ class TestMain(TestCase):
         # Test the compare folder function with texts that has multiple plagiarism with some texts that the sum of the similarities is the 100% of the text
 
 
-    def setUp(self):
-        self.main = Main("") # Path to the test data folder
+    # def setUp(self):
+    #     self.main = Main("") # Path to the test data folder
 
     def test_0(self):
         self.assertEqual(

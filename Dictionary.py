@@ -20,20 +20,26 @@ class Dictionary:
 
     # Document Reading Function, reads a text file according to the file and folder
     # path given as strings, it preprocesses the data and updates the dictionary.
-    def text_reading(self, folder_path, text_path):
+    def text_reading(self, text_path, folder_path=''):
         file = open(folder_path+"/"+text_path, "r")
         content = file.read()
+        if content == '':
+            raise Exception("The file is empty")
         self.current_text = content
         self.preprocess_data()
         self.update_dictionary(text_path)
         file.close()
-
+        return self.current_text
+    
     # Folder Text Reading Function, reads all the text files in the folder of the
-    # path given as a string.
+    # path given as a string.    
     def folder_text_reading(self, folder_path):
         for file_path in os.listdir(folder_path):
             if file_path.endswith(".txt"):
-                self.text_reading(folder_path, file_path)
+                try:
+                    self.text_reading(file_path, folder_path)
+                except Exception as e:
+                    print(e)
 
     # Preprocess Data Function, preprocesses the data of the saved text using the
     # functions in the Preprocessing class.
@@ -46,5 +52,3 @@ class Dictionary:
     def update_dictionary(self, text_path):
         self.dictionary[text_path] = self.preprocess_module.n_grams
         return self.dictionary
-
-    

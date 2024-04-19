@@ -48,8 +48,8 @@ class TestPreprocessing(TestCase):
         # Test n_grams size
         # Test n_grams range
 
-    def setUp(self):
-        self.preprocessing = Preprocessing()
+    # def setUp(self):
+    #     self.preprocessing = Preprocessing()
 
     def test_0(self):
         self.assertEqual(

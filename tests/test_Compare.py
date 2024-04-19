@@ -50,8 +50,8 @@ class TestCompare(TestCase):
             # Test empty text
 
 
-    def setUp(self):
-        self.compare = Compare()
+    # def setUp(self):
+    #     self.compare = Compare()
 
     def test_0(self):
         self.assertEqual(
