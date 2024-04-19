@@ -1,10 +1,16 @@
 from unittest import TestCase
 from Dictionary import Dictionary
+import os
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 class TestDictionary(TestCase):
 
+    
+
     def setUp(self):
         self.dictionary = Dictionary()
+        self.dir_path = dir_path
 
     # Test correct initialization
     def test_0(self):
@@ -21,33 +27,33 @@ class TestDictionary(TestCase):
     def test_2(self):
         self.assertEqual(
             'This is a test text file information',
-            self.dictionary.text_reading('/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/tests/Data/text.txt'))
+            self.dictionary.text_reading(os.path.join(self.dir_path, 'Data/text.txt')))
     
     # Test text reading function - File with no text
     def test_3(self):
         with self.assertRaises(Exception):
-            self.dictionary.text_reading('/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/tests/Data/noText.txt')
+            self.dictionary.text_reading(os.path.join(self.dir_path, 'Data/noText.txt'))
     
     # Test text reading function - Wrong path
     def test_4(self):
         with self.assertRaises(FileNotFoundError):
-            self.dictionary.text_reading('/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/tests/Data/wrongPath.txt')
+            self.dictionary.text_reading(os.path.join(self.dir_path, 'Data/wrongPath.txt'))
 
     # Test folder text reading function - Empty folder
     def test_5(self):
         with self.assertRaises(Exception):
-            self.dictionary.folder_text_reading('/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/tests/Data/emptyFolder')
+            self.dictionary.folder_text_reading(os.path.join(self.dir_path, 'Data/emptyFolder'))
 
     # Test folder text reading function - Folder with text files
     def test_6(self):
         self.assertEqual(
-            ['This is a test two', 'This is a test one'],
-            self.dictionary.folder_text_reading('/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/tests/Data/textsFolder'))
+            ['This is a test one', 'This is a test two'],
+            self.dictionary.folder_text_reading(os.path.join(self.dir_path, 'Data/textsFolder')))
 
     # Test folder text reading function - Folder with no text files
     def test_7(self):
         with self.assertRaises(Exception):
-            self.dictionary.folder_text_reading('/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/tests/Data/noTextsFolder')    
+            self.dictionary.folder_text_reading(os.path.join(self.dir_path, 'Data/noTextsFolder'))    
 
     # Test folder text reading function - Folder with text files empty
 
