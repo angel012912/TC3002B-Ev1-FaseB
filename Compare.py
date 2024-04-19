@@ -7,12 +7,16 @@ from Preprocessing import Preprocessing
 from pprint import pprint
 class Compare:
 
+    # Constructor for the class Compare, it initializes current text that is being analyzed
+    # an instance of the Preprocessing class, a given instance of the Dictionary class
+    # and the list of n-grams of the text that is being analyzed.
     def __init__(self, dictionary):
         self.textToCompare = ''
         self.dictionary = dictionary
         self.text_n_grams = []
         self.preproccess_module = Preprocessing()
     
+    # Read Text Function, reads a text file according to the file path given as a string.
     def read_text(self,text_path):
         file = open(text_path, "r")
         content = file.read()
@@ -20,12 +24,18 @@ class Compare:
         file.close()
         return self.textToCompare
 
+    # Preprocess Data Function, preprocesses the data of the saved text using the
+    # functions in the Preprocessing class.
     def preprocess_data(self):
         self.preproccess_module.set_text(self.textToCompare)
         self.preproccess_module.preprocess_data()
         self.text_n_grams = self.preproccess_module.n_grams
         return self.text_n_grams
 
+    # Get Similarity Score Function, calculates the similarity score between two 
+    # sentences according to their given list of n-grams. The score is calculated
+    # by dividing the number of n-grams that are present in both sentences by the
+    # total number of n-grams in both sentences. 
     def get_similarity_score(self, sentence1_ngrams, sentence2_ngrams):
         set_sentence1 = set(sentence1_ngrams)
         set_sentence2 = set(sentence2_ngrams)
@@ -34,6 +44,8 @@ class Compare:
         score = len(ngrams_both) / len(ngrams_list)
         return round(score, 2)
 
+    # Get Similarity Matrix Function, calculates the similarity matrix between two
+    # given paragraphs, using the similarity score function.
     def get_similarity_matrix(self, paragraph1, paragraph2):
         similarities_matrix = []
         for sentence2 in paragraph2:
@@ -44,6 +56,12 @@ class Compare:
             similarities_matrix.append(sentence_similarity)
         return similarities_matrix
 
+    # Compare Function, compares the text that was read and preprocessed with the
+    # texts in the dictionary, calculating the mean of each similarity matrix 
+    # between the analyzed text and each text from the dictionary. The function
+    # returns a boolean value that indicates if the text is plagiarized, the sum
+    # of the scores of the possible plagiarism texts and a list of the possible
+    # plagiarism texts.
     def compare(self, text_path):
         self.read_text(text_path)
         self.preprocess_data()

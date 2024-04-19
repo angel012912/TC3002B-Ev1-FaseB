@@ -10,6 +10,8 @@ import os
 
 class Main:
 
+    # Constructor for the class Main, it initializes the dictionary of the tool
+    # reading the text files in the given folder path.
     def __init__(self, path):
         self.dictionary = Dictionary()
         if (os.path.isdir(path)):
@@ -18,9 +20,13 @@ class Main:
             self.dictionary.text_reading(path)
         self.compare_module = Compare(self.dictionary.dictionary)
     
+    # Compare Function, compares the text located in the text path with the
+    # texts in the dictionary, using the compare function in the Compare class.
     def compare(self, text_path):
         return self.compare_module.compare(text_path)
     
+    # Compare Folder Function, compares all the text files in the folder path
+    # using the compare function.
     def compare_folder(self, folder_path):
         result = {}
         for file in os.listdir(folder_path):
