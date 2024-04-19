@@ -41,13 +41,20 @@ class Dictionary:
     path given as a string.    
     """
     def folder_text_reading(self, folder_path):
+        if not os.listdir(folder_path):
+            raise Exception("The folder is empty")
+        content_readed_list = []
         for file_path in os.listdir(folder_path):
             if file_path.endswith(".txt"):
                 try:
-                    self.text_reading(file_path, folder_path)
+                    content_readed = self.text_reading(file_path, folder_path)
+                    content_readed_list.append(content_readed)
                 except Exception as e:
                     print(e)
-
+        if not content_readed_list:
+            raise Exception("The folder has no text files")
+        return content_readed_list
+    
     """
     Preprocess Data Function, preprocesses the data of the saved text using the
     functions in the Preprocessing class.
