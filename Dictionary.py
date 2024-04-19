@@ -1,13 +1,14 @@
-# Team 5
-# José Ángel García Gómez - A01745865
-# David Damian Galan - A01752785
-# Luis Humberto Romero Pérez - A01752789
-# File or class that contains the correspondent process to create or update de n-grams dictionary for the tool
+"""
+Team 5
+José Ángel García Gómez - A01745865
+David Damian Galan - A01752785
+Luis Humberto Romero Pérez - A01752789
+File or class that contains the correspondent process to create or update de n-grams dictionary for the tool
+"""
 
 # Libraries
 import os
 from Preprocessing import Preprocessing
-from pprint import pprint
 
 class Dictionary:
 
