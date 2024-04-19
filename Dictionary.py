@@ -11,15 +11,19 @@ from pprint import pprint
 
 class Dictionary:
 
-    # Constructor for the class Dictionary, it initializes the dictionary of the tool
-    # the current text that is being processed an instance of the Preprocessing class.
+    """
+    Constructor for the class Dictionary, it initializes the dictionary of the tool
+    the current text that is being processed an instance of the Preprocessing class.
+    """
     def __init__(self):
         self.dictionary = {}
         self.current_text = ''
         self.preprocess_module = Preprocessing()
 
-    # Document Reading Function, reads a text file according to the file and folder
-    # path given as strings, it preprocesses the data and updates the dictionary.
+    """
+    Document Reading Function, reads a text file according to the file and folder
+    path given as strings, it preprocesses the data and updates the dictionary.
+    """
     def text_reading(self, text_path, folder_path=''):
         file = open(folder_path+"/"+text_path, "r")
         content = file.read()
@@ -31,8 +35,10 @@ class Dictionary:
         file.close()
         return self.current_text
     
-    # Folder Text Reading Function, reads all the text files in the folder of the
-    # path given as a string.    
+    """
+    Folder Text Reading Function, reads all the text files in the folder of the
+    path given as a string.    
+    """
     def folder_text_reading(self, folder_path):
         for file_path in os.listdir(folder_path):
             if file_path.endswith(".txt"):
@@ -41,14 +47,18 @@ class Dictionary:
                 except Exception as e:
                     print(e)
 
-    # Preprocess Data Function, preprocesses the data of the saved text using the
-    # functions in the Preprocessing class.
+    """
+    Preprocess Data Function, preprocesses the data of the saved text using the
+    functions in the Preprocessing class.
+    """
     def preprocess_data(self):
         self.preprocess_module.set_text(self.current_text)
         self.preprocess_module.preprocess_data()
     
-    # Update Dictionary Function, updates the dictionary with the n-grams of the
-    # text that was just processed.
+    """
+    Update Dictionary Function, updates the dictionary with the n-grams of the
+    text that was just processed.
+    """
     def update_dictionary(self, text_path):
         self.dictionary[text_path] = self.preprocess_module.n_grams
         return self.dictionary
