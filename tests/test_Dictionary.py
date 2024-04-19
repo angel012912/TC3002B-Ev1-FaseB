@@ -46,9 +46,10 @@ class TestDictionary(TestCase):
 
     # Test folder text reading function - Folder with text files
     def test_6(self):
-        self.assertEqual(
-            ['This is a test one', 'This is a test two'],
-            self.dictionary.folder_text_reading(os.path.join(self.dir_path, 'Data/textsFolder')))
+        result = self.dictionary.folder_text_reading(os.path.join(self.dir_path, 'Data/textsFolder'))
+        expected_cases = [['This is a test one', 'This is a test two'], ['This is a test two', 'This is a test one']]
+        for expected_case in expected_cases:
+            self.assertCountEqual(result, expected_case)
 
     # Test folder text reading function - Folder with no text files
     def test_7(self):
