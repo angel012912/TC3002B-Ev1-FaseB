@@ -26,7 +26,7 @@ class Main:
         return self.compare_module.compare(text_path)
     
     # Compare Folder Function, compares all the text files in the folder path
-    # using the compare function.
+    # with the texts in the dictionary, using the compare function in the Compare class.
     def compare_folder(self, folder_path):
         result = {}
         for file in os.listdir(folder_path):

@@ -60,7 +60,7 @@ class Preprocessing:
         return self.word_list
 
     # Create N-Grams Function, creates n-grams of the word list of the 
-    # sentences from the processed text, given the size n of the n-grams.
+    # sentences from the processed text, given the range of the n-grams.
     def create_n_grams(self, n_range):
         self.n_grams = []
         for n in n_range:

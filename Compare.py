@@ -60,7 +60,7 @@ class Compare:
     # texts in the dictionary, calculating the mean of each similarity matrix 
     # between the analyzed text and each text from the dictionary. The function
     # returns a boolean value that indicates if the text is plagiarized, the sum
-    # of the scores of the possible plagiarism texts and a list of the possible
+    # of the scores of the possible plagiarism and a list of the possible
     # plagiarism texts.
     def compare(self, text_path):
         self.read_text(text_path)
