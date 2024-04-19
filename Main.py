@@ -1,8 +1,12 @@
-# Team 5
-# José Ángel García Gómez - A01745865
-# David Damian Galan - A01752785
-# Luis Humberto Romero Pérez - A01752789
-# Main file of the tool, contains the correspondent process to ask the tool to validate the similarity of a given text
+"""
+Team 5
+José Ángel García Gómez - A01745865
+David Damian Galan - A01752785
+Luis Humberto Romero Pérez - A01752789
+Main file of the tool, contains the correspondent process to ask the tool to validate the similarity of a given text
+"""
+
+# Libraries
 from Dictionary import Dictionary
 from Compare import Compare
 from pprint import pprint
@@ -10,8 +14,10 @@ import os
 
 class Main:
 
-    # Constructor for the class Main, it initializes the dictionary of the tool
-    # reading the text files in the given folder path.
+    """
+    Constructor for the class Main, it initializes the dictionary of the tool
+    reading the text files in the given folder path.
+    """
     def __init__(self, path):
         self.dictionary = Dictionary()
         if (os.path.isdir(path)):
@@ -20,13 +26,17 @@ class Main:
             self.dictionary.text_reading(path)
         self.compare_module = Compare(self.dictionary.dictionary)
     
-    # Compare Function, compares the text located in the text path with the
-    # texts in the dictionary, using the compare function in the Compare class.
+    """
+    Compare Function, compares the text located in the text path with the
+    texts in the dictionary, using the compare function in the Compare class.
+    """
     def compare(self, text_path):
         return self.compare_module.compare(text_path)
     
-    # Compare Folder Function, compares all the text files in the folder path
-    # with the texts in the dictionary, using the compare function in the Compare class.
+    """
+    Compare Folder Function, compares all the text files in the folder path
+    with the texts in the dictionary, using the compare function in the Compare class.
+    """
     def compare_folder(self, folder_path):
         result = {}
         for file in os.listdir(folder_path):
