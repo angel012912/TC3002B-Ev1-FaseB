@@ -56,8 +56,14 @@ class TestDictionary(TestCase):
             self.dictionary.folder_text_reading(os.path.join(self.dir_path, 'Data/noTextsFolder'))    
 
     # Test folder text reading function - Folder with text files empty
+    def test_8(self):
+        with self.assertRaises(Exception):
+            self.dictionary.folder_text_reading(os.path.join(self.dir_path, "/Data/emptyTextsFolder"))
 
     # Test folder text reading function - Wrong path
+    def test_9(self):
+        with self.assertRaises(Exception):
+            self.dictionary.folder_text_reading(os.path.join(self.dir_path, "Data/unexistentFolder"))
 
     # Test preprocess data function
         # Test preprocess module
