@@ -28,7 +28,7 @@ class Compare:
     def read_text(self, text_path):
         if not text_path.endswith(".txt"):
             raise Exception("The file is not a .txt file") 
-        file = open(text_path, "r")
+        file = open(text_path, "r", encoding="utf-8")
         content = file.read()
         if content == '':
             raise Exception("The file is empty")
@@ -109,9 +109,9 @@ class Compare:
                 n_gram_length_sum += n_gram_length
                 n_gram_scores.append(mean_score)
             final_score = round(sum(n_gram_scores) / n_gram_length_sum, 2)
-            if final_score > 0.1:
+            if final_score > 0.01:
                 plagiarism_info = (key, final_score)
                 possible_plagiarism_texts.append(plagiarism_info)
                 sum_scores += final_score
         
-        return (True, sum_scores, possible_plagiarism_texts) if (sum_scores >= 0.25) else (False, "No plagiarism detected")
+        return (True, sum_scores, possible_plagiarism_texts) if (sum_scores >= 0.05) else (False, sum_scores, "No plagiarism detected", possible_plagiarism_texts)
