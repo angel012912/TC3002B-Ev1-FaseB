@@ -1,5 +1,11 @@
 from unittest import TestCase
 from Main import Main
+from unittest import mock
+import Compare
+import Dictionary
+import os
+
+dir_name = os.path.dirname(os.path.realpath(__file__))
 
 class TestMain(TestCase):
 
@@ -34,10 +40,30 @@ class TestMain(TestCase):
         # Test the compare folder function with texts that has multiple plagiarism with some texts that the sum of the similarities is the 100% of the text
 
 
-    # def setUp(self):
-    #     self.main = Main("") # Path to the test data folder
+    def setUp(self):
+        self.main = Main(os.path.join(dir_name, "../TestData"))
+         # Path to the test data folder
 
     def test_0(self):
         self.assertEqual(
             0,
             0)
+    
+    """
+    Function to mock the behaviour of Compare.compare
+    Returns a tuple with
+    (
+        File is plagiarism (boolean),
+        Percentage of coincidences (float),
+        List of tuples of files with coincidences ((filename, percentage))
+    )
+    """
+    def compare_mock(self, text_path):
+        return (True, 0.67, [(text_path, 0.67)])
+
+    # Test the main.compare function calls the Compare.compare function
+    @mock.patch('Compare.Compare.compare', new=compare_mock)
+    def test_xx(self):
+        self.assertEqual(self.main.compare("my_file.txt"),
+                         (True, 0.67, [('my_file.txt', 0.67)]))
+        
