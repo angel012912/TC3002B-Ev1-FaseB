@@ -47,6 +47,6 @@ class Main:
         return result
 
 if __name__ == '__main__':
-    main = Main("/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/Data")
-    result = main.compare_folder('/Users/angel/Documents/Tec/8vo Sem/TC3002B-Ev1-FaseB/TestData')
+    main = Main(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Data"))
+    result = main.compare_folder(os.path.join(os.path.dirname(os.path.realpath(__file__)), "TestData"))
     pprint(result)
