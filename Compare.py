@@ -13,7 +13,7 @@ class Compare:
 
     """
     Constructor for the class Compare, it initializes current text that is being analyzed
-    an instance of the Preprocessing class, a given instance of the Dictionary class
+    an instance of the Preprocessing class, a given dictionary of texts to compare with
     and the list of n-grams of the text that is being analyzed.
     """
     def __init__(self, dictionary):
@@ -25,9 +25,13 @@ class Compare:
     """
     Read Text Function, reads a text file according to the file path given as a string.
     """
-    def read_text(self,text_path):
+    def read_text(self, text_path):
+        if not text_path.endswith(".txt"):
+            raise Exception("The file is not a .txt file") 
         file = open(text_path, "r")
         content = file.read()
+        if content == '':
+            raise Exception("The file is empty")
         self.textToCompare = content
         file.close()
         return self.textToCompare
@@ -49,6 +53,8 @@ class Compare:
     total number of n-grams in both sentences. 
     """
     def get_similarity_score(self, sentence1_ngrams, sentence2_ngrams):
+        if not sentence1_ngrams or not sentence2_ngrams:
+            return 0
         set_sentence1 = set(sentence1_ngrams)
         set_sentence2 = set(sentence2_ngrams)
         ngrams_both = set_sentence1.intersection(set_sentence2)
@@ -79,23 +85,27 @@ class Compare:
     plagiarism texts.
     """
     def compare(self, text_path):
-        self.read_text(text_path)
+        try:
+            self.read_text(text_path)
+        except Exception as e:
+            raise Exception(e)
         self.preprocess_data()
         possible_plagiarism_texts = []
         sum_scores = 0
         for key in self.dictionary:
             n_gram_scores = []
             n_gram_length_sum = 0
+            final_score = 0
             for n_gram_index in range(len(self.text_n_grams)):
                 original_text_ngrams = self.dictionary[key][n_gram_index]
                 actual_text_ngrams = self.text_n_grams[n_gram_index]
-                n_gram_length = len(actual_text_ngrams[0][0])
+                n_gram_length = len(actual_text_ngrams[0][0]) if actual_text_ngrams else 0
                 similarities_matrix = self.get_similarity_matrix(original_text_ngrams, actual_text_ngrams)
                 mean_score = 0
                 for sentence in similarities_matrix:
-                    sentence_score = max(sentence)
+                    sentence_score = max(sentence) if sentence else 0
                     mean_score += sentence_score
-                mean_score = (mean_score / len(similarities_matrix)) * n_gram_length
+                mean_score = (mean_score / (len(similarities_matrix))) * n_gram_length if similarities_matrix else 0
                 n_gram_length_sum += n_gram_length
                 n_gram_scores.append(mean_score)
             final_score = round(sum(n_gram_scores) / n_gram_length_sum, 2)
