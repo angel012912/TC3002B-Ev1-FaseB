@@ -114,4 +114,4 @@ class Compare:
                 possible_plagiarism_texts.append(plagiarism_info)
                 sum_scores += final_score
         
-        return (True, sum_scores, possible_plagiarism_texts) if (sum_scores >= 0.05) else (False, sum_scores, "No plagiarism detected", possible_plagiarism_texts)
+        return (True, '{:.2f}'.format(sum_scores), possible_plagiarism_texts) if (sum_scores >= 0.05) else (False, '{:.2f}'.format(sum_scores), "No plagiarism detected", possible_plagiarism_texts)
