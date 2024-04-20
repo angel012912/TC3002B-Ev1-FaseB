@@ -26,7 +26,7 @@ class Dictionary:
     path given as strings, it preprocesses the data and updates the dictionary.
     """
     def text_reading(self, text_path, folder_path=''):
-        file = open(folder_path+"/"+text_path, "r")
+        file = open(folder_path+"/"+text_path, "r") if folder_path else open(text_path, "r")
         content = file.read()
         if content == '':
             raise Exception("The file is empty")
