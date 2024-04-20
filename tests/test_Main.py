@@ -18,36 +18,10 @@ class TestMain(TestCase):
         # Test compare_module
             # Test the compare dictionary
 
-    # Test compare
-        # Test the compare function
-        # Test the compare with empty text
-        # Test the compare with a wrong path
-        # Test the compare with a correct path
-        # Test the compare with a path with no .txt extension
-        # Test the compare with a identical text to a text in the dictionary
-        # Test the compare with a text that is not in the dictionary
-        # Test the compare with a text that is in the dictionary but is not identical
-        # Test the compare with a text with minimal similarity
-        # Test the compare with a text with minimal similarity with some texts
-        # Test the compare with a text with minimal similarity with some texts that the sum of the similarities is greater equal than the minimal
-        # Test the compare folder function
-        # Test the compare folder function with a folder with no .txt files
-        # Test the compare folder function with wrong path
-        # Test the compare folder function with texts that has no plagiarism
-        # Test the compare folder function with texts that has one plagiarism
-        # Test the compare folder function with texts that has multiple plagiarism
-        # Test the compare folder function with texts that has multiple plagiarism with some texts that the sum of the similarities is greater equal than the minimal
-        # Test the compare folder function with texts that has multiple plagiarism with some texts that the sum of the similarities is the 100% of the text
-
-
     def setUp(self):
         self.main = Main(os.path.join(dir_name, "../TestData"))
          # Path to the test data folder
 
-    def test_0(self):
-        self.assertEqual(
-            0,
-            0)
     
     """
     Function to mock the behaviour of Compare.compare
@@ -63,7 +37,17 @@ class TestMain(TestCase):
 
     # Test the main.compare function calls the Compare.compare function
     @mock.patch('Compare.Compare.compare', new=compare_mock)
-    def test_xx(self):
+    def test_01(self):
         self.assertEqual(self.main.compare("my_file.txt"),
                          (True, 0.67, [('my_file.txt', 0.67)]))
-        
+    
+    def os_listdir_mock(self):
+        return ["file_1.txt", "file_2.txt", "file_3.pdf"]
+    
+    # Test function goes through all txt files in the folder and returns an evaluation for each one
+    @mock.patch('Compare.Compare.compare', new=compare_mock)
+    @mock.patch('os.listdir', new=os_listdir_mock)
+    def test_02(self):
+        expected_result = {"file_1.txt": (True, 0.67, [('some_folder/file_1.txt', 0.67)]),
+                           "file_2.txt": (True, 0.67, [('some_folder/file_2.txt', 0.67)])}
+        self.assertEqual(self.main.compare_folder("some_folder"), expected_result)
