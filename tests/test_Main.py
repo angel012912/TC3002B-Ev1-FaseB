@@ -48,6 +48,6 @@ class TestMain(TestCase):
     @mock.patch('Compare.Compare.compare', new=compare_mock)
     @mock.patch('os.listdir', new=os_listdir_mock)
     def test_02(self):
-        expected_result = {"file_1.txt": (True, 0.67, [('some_folder/file_1.txt', 0.67)]),
-                           "file_2.txt": (True, 0.67, [('some_folder/file_2.txt', 0.67)])}
+        expected_result = {"file_1.txt": (True, 0.67, [('some_folder\\file_1.txt', 0.67)]),
+                           "file_2.txt": (True, 0.67, [('some_folder\\file_2.txt', 0.67)])}
         self.assertEqual(self.main.compare_folder("some_folder"), expected_result)

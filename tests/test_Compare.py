@@ -144,7 +144,7 @@ class TestCompare(TestCase):
         self.compare.read_text(os.path.join(self.dir_path, 'Data/text.txt'))
         self.compare.preprocess_data()
         self.assertEqual(
-            (True, 1.0, [('Data/text.txt', 1.0)]),
+            (True, '1.00', [('Data/text.txt', 1.00)]),
             self.compare.compare(os.path.join(self.dir_path, 'Data/text.txt')))
 
     # Test compare function - Test plagiarism with different texts
@@ -153,7 +153,7 @@ class TestCompare(TestCase):
         newDictionary.folder_text_reading(os.path.join(self.dir_path, 'Data/textsFolder'))
         compare = Compare(newDictionary.dictionary)
         result = compare.compare(os.path.join(self.dir_path, 'Data/txtSomeTexts.txt'))
-        expected_cases = [(True, 1.0, [('txtPlag2.txt', 0.5), ('txtPlag1.txt', 0.5)]), (True, 1.0, [('txtPlag1.txt', 0.5), ('txtPlag2.txt', 0.5)])]
+        expected_cases = [(True, '1.00', [('txtPlag2.txt', 0.50), ('txtPlag1.txt', 0.50)]), (True, '1.00', [('txtPlag1.txt', 0.50), ('txtPlag2.txt', 0.50)])]
         self.assertIn(result, expected_cases)
     
     # Test compare function - Test minimal plagiarism
@@ -161,9 +161,9 @@ class TestCompare(TestCase):
         newDictionary = Dictionary()
         newDictionary.folder_text_reading(os.path.join(self.dir_path, 'Data/textsFolder'))
         compare = Compare(newDictionary.dictionary)
-        self.assertAlmostEqual(
-            0.25,
-            compare.compare(os.path.join(self.dir_path, 'Data/txtMinimal.txt'))[1], places=1)
+        self.assertEqual(
+            '0.26',
+            compare.compare(os.path.join(self.dir_path, 'Data/txtMinimal.txt'))[1])
 
     # Test compare function - Test empty text
     def test_24(self):
