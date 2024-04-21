@@ -1,3 +1,10 @@
+"""
+Team 5
+José Ángel García Gómez - A01745865
+David Damian Galan - A01752785
+Luis Humberto Romero Pérez - A01752789
+Main file of the tool, contains the correspondent process to ask the tool to validate the similarity of a given text
+"""
 from unittest import TestCase
 from Main import Main
 from unittest import mock
