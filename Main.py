@@ -47,6 +47,8 @@ class Main:
         return result
 
 if __name__ == '__main__':
-    main = Main(os.path.join(os.path.dirname(os.path.realpath(__file__)), "Data"))
-    result = main.compare_folder(os.path.join(os.path.dirname(os.path.realpath(__file__)), "TestData"))
+    reference_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Data")
+    main = Main(reference_file_path)
+    evaluate_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "TestData")
+    result = main.compare_folder(evaluate_file_path)
     pprint(result)
