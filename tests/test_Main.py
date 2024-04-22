@@ -8,28 +8,15 @@ Main file of the tool, contains the correspondent process to ask the tool to val
 from unittest import TestCase
 from Main import Main
 from unittest import mock
-import Compare
-import Dictionary
 import os
 
 dir_name = os.path.dirname(os.path.realpath(__file__))
 
 class TestMain(TestCase):
 
-    # Test correct initialization
-        # Test dictionary
-            # Test the folder text reading
-            # Test the folder dictionary
-            # Test the text text reading
-            # Test the text dictionary
-        # Test compare_module
-            # Test the compare dictionary
-
     def setUp(self):
         self.main = Main(os.path.join(dir_name, "../TestData"))
-         # Path to the test data folder
 
-    
     """
     Function to mock the behaviour of Compare.compare
     Returns a tuple with
@@ -55,6 +42,9 @@ class TestMain(TestCase):
     @mock.patch('Compare.Compare.compare', new=compare_mock)
     @mock.patch('os.listdir', new=os_listdir_mock)
     def test_02(self):
-        expected_result = {"file_1.txt": (True, 0.67, [('some_folder\\file_1.txt', 0.67)]),
-                           "file_2.txt": (True, 0.67, [('some_folder\\file_2.txt', 0.67)])}
-        self.assertEqual(self.main.compare_folder("some_folder"), expected_result)
+        expected_result = [{"file_1.txt": (True, 0.67, [('some_folder\\file_1.txt', 0.67)]),
+                           "file_2.txt": (True, 0.67, [('some_folder\\file_2.txt', 0.67)])},
+                           {"file_1.txt": (True, 0.67, [('some_folder/file_1.txt', 0.67)]),
+                           "file_2.txt": (True, 0.67, [('some_folder/file_2.txt', 0.67)])} 
+                           ]
+        self.assertIn(self.main.compare_folder("some_folder"), expected_result)
