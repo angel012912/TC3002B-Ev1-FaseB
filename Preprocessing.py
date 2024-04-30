@@ -24,7 +24,6 @@ class Preprocessing:
         self.processed_text = ''
         self.sentences = []
         self.word_list = []
-        self.n_grams = []
         self.lemmatizer = WordNetLemmatizer()
     
     """
@@ -75,21 +74,9 @@ class Preprocessing:
         self.word_list = [[self.lemmatizer.lemmatize(word) for word in sentence] for sentence in self.word_list]
         return self.word_list
 
-    """
-    Create N-Grams Function, creates n-grams of the word list of the 
-    sentences from the processed text, given the range of the n-grams.
-    """
-    def create_n_grams(self, n_range):
-        self.n_grams = []
-        for n in n_range:
-            ngram_list = []
-            for sentence in self.word_list:
-                sentence_n_grams = []
-                for i in range(len(sentence)-n+1):
-                    sentence_n_grams.append(tuple(sentence[i:i+n]))
-                ngram_list.append(sentence_n_grams) if sentence_n_grams else None
-            self.n_grams.append(ngram_list)
-        return self.n_grams
+    def recreate_sentences(self):
+        self.sentences = [' '.join(sentence) for sentence in self.word_list]
+        return self.sentences
     
     """
     Preprocess Data Function, preprocesses the data of the current text using the
@@ -100,5 +87,5 @@ class Preprocessing:
         self.sentence_separation()
         self.stopword_removal()
         self.lemmatize_words()
-        self.create_n_grams(range(2, 6))
-        return self.n_grams
+        self.recreate_sentences()
+        return self.sentences

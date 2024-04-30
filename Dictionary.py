@@ -68,5 +68,5 @@ class Dictionary:
     text that was just processed.
     """
     def update_dictionary(self, text_path):
-        self.dictionary[text_path] = self.preprocess_module.n_grams
+        self.dictionary[text_path] = self.preprocess_module.sentences
         return self.dictionary

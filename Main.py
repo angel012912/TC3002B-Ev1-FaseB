@@ -18,20 +18,25 @@ class Main:
     Constructor for the class Main, it initializes the dictionary of the tool
     reading the text files in the given folder path.
     """
-    def __init__(self, path):
+    def __init__(self, path, model_path="", tokenizer_path=""):
         self.dictionary = Dictionary()
         if (os.path.isdir(path)):
             self.dictionary.folder_text_reading(path)
         else:
             self.dictionary.text_reading(path)
-        self.compare_module = Compare(self.dictionary.dictionary)
+        self.compare_module = Compare(self.dictionary.dictionary, model_path, tokenizer_path)
     
     """
     Compare Function, compares the text located in the text path with the
     texts in the dictionary, using the compare function in the Compare class.
     """
-    def compare(self, text_path):
-        return self.compare_module.compare(text_path)
+    def compare(self, path):
+        if not os.path.exists(path):
+            raise Exception("The path does not exist")
+        elif (os.path.isdir(path)):
+            return self.compare_folder(path)
+        else:
+            return self.compare_module.compare(path)
     
     """
     Compare Folder Function, compares all the text files in the folder path
@@ -48,7 +53,10 @@ class Main:
 
 if __name__ == '__main__':
     reference_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Data")
-    main = Main(reference_file_path)
     evaluate_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "TestData")
-    result = main.compare_folder(evaluate_file_path)
+    model_weights_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Model", "lstm_model_weights.h5")
+    tokenizer_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Model", "tokenizer.pickle")
+    main = Main(reference_file_path)
+    # pprint(main.compare_module.dictionary)
+    result = main.compare(evaluate_file_path)
     pprint(result)

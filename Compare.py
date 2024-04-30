@@ -8,6 +8,9 @@ File or class that contains all functions to calculate the similitude between tw
 
 # Libraries
 from Preprocessing import Preprocessing
+from keras.models import load_model
+import pickle
+import random
 
 class Compare:
 
@@ -16,11 +19,39 @@ class Compare:
     an instance of the Preprocessing class, a given dictionary of texts to compare with
     and the list of n-grams of the text that is being analyzed.
     """
-    def __init__(self, dictionary):
+    def __init__(self, dictionary, model_path="", tokenizer_path=""):
         self.textToCompare = ''
         self.dictionary = dictionary
-        self.text_n_grams = []
+        self.text_sentences = []
         self.preproccess_module = Preprocessing()
+        try:
+            if not model_path or not tokenizer_path:
+                raise Exception("Model or tokenizer paths not found")
+            self.compare_model = self._load_model(model_path)
+            self.tokenizer = self._load_tokenizer(tokenizer_path)
+        except Exception as e:
+            print(e)
+            self.compare_model = self._set_default_model
+            self.tokenizer = self._set_default_tokenizer
+    
+    def _load_model(self, model_path):
+        model = load_model(model_path)
+        return model
+    
+    def _load_tokenizer(self, tokenizer_path):
+        with open(tokenizer_path, "rb") as file:
+            tokenizer = pickle.load(file)
+        return tokenizer
+
+    def _set_default_model(self, sentence1, sentence2):
+        possible_plagiarism_types = ["Insert or replace sentences", "mess up sentences", "voice changes"]
+        is_plagiarized = random.choice([0, 1])
+        plagiarism_type = random.choice(possible_plagiarism_types) if is_plagiarized else None
+        result = (is_plagiarized, plagiarism_type)
+        return result
+
+    def _set_default_tokenizer(self, sentence):
+        return sentence
     
     """
     Read Text Function, reads a text file according to the file path given as a string.
@@ -43,8 +74,8 @@ class Compare:
     def preprocess_data(self):
         self.preproccess_module.set_text(self.textToCompare)
         self.preproccess_module.preprocess_data()
-        self.text_n_grams = self.preproccess_module.n_grams
-        return self.text_n_grams
+        self.text_sentences = self.preproccess_module.sentences
+        return self.text_sentences
 
     """
     Get Similarity Score Function, calculates the similarity score between two 
@@ -52,15 +83,13 @@ class Compare:
     by dividing the number of n-grams that are present in both sentences by the
     total number of n-grams in both sentences. 
     """
-    def get_similarity_score(self, sentence1_ngrams, sentence2_ngrams):
-        if not sentence1_ngrams or not sentence2_ngrams:
-            return 0
-        set_sentence1 = set(sentence1_ngrams)
-        set_sentence2 = set(sentence2_ngrams)
-        ngrams_both = set_sentence1.intersection(set_sentence2)
-        ngrams_list = set_sentence1.union(set_sentence2)
-        score = len(ngrams_both) / len(ngrams_list)
-        return round(score, 2)
+    def get_similarity_score(self, sentence1, sentence2):
+        if not sentence1 or not sentence2:
+            return (0, None)
+        sentence1_tokenized = self.tokenizer(sentence1)
+        sentence2_tokenized = self.tokenizer(sentence2)
+        result = self.compare_model(sentence1_tokenized, sentence2_tokenized)
+        return result
 
     """
     Get Similarity Matrix Function, calculates the similarity matrix between two
@@ -68,13 +97,15 @@ class Compare:
     """
     def get_similarity_matrix(self, paragraph1, paragraph2):
         similarities_matrix = []
+        plagiarism_types_detecet = set()
         for sentence2 in paragraph2:
             sentence_similarity = []
             for sentence1 in paragraph1:
-                score = self.get_similarity_score(sentence1, sentence2)
+                score, plagiarism_type = self.get_similarity_score(sentence1, sentence2)
+                plagiarism_types_detecet.add(plagiarism_type) if plagiarism_type else None
                 sentence_similarity.append(score)
             similarities_matrix.append(sentence_similarity)
-        return similarities_matrix
+        return (similarities_matrix, list(plagiarism_types_detecet))
 
     """
     Compare Function, compares the text that was read and preprocessed with the
@@ -93,25 +124,21 @@ class Compare:
         possible_plagiarism_texts = []
         sum_scores = 0
         for key in self.dictionary:
-            n_gram_scores = []
-            n_gram_length_sum = 0
+            sentence_scores = []
             final_score = 0
-            for n_gram_index in range(len(self.text_n_grams)):
-                original_text_ngrams = self.dictionary[key][n_gram_index]
-                actual_text_ngrams = self.text_n_grams[n_gram_index]
-                n_gram_length = len(actual_text_ngrams[0][0]) if actual_text_ngrams else 0
-                similarities_matrix = self.get_similarity_matrix(original_text_ngrams, actual_text_ngrams)
-                mean_score = 0
-                for sentence in similarities_matrix:
-                    sentence_score = max(sentence) if sentence else 0
-                    mean_score += sentence_score
-                mean_score = (mean_score / (len(similarities_matrix))) * n_gram_length if similarities_matrix else 0
-                n_gram_length_sum += n_gram_length
-                n_gram_scores.append(mean_score)
-            final_score = round(sum(n_gram_scores) / n_gram_length_sum, 2)
+            original_text_sentences = self.dictionary[key]
+            actual_text_sentences = self.text_sentences
+            similarities_matrix, plagiarisms_detected = self.get_similarity_matrix(original_text_sentences, actual_text_sentences)
+            mean_score = 0
+            for sentence in similarities_matrix:
+                sentence_score = max(sentence) if sentence else 0
+                mean_score += sentence_score / len(sentence)
+            mean_score = (mean_score / (len(similarities_matrix)))
+            sentence_scores.append(mean_score)
+            final_score = round(sum(sentence_scores) / len(sentence_scores), 2)
             if final_score > 0.01:
-                plagiarism_info = (key, final_score)
+                plagiarism_info = (key, final_score, plagiarisms_detected)
                 possible_plagiarism_texts.append(plagiarism_info)
                 sum_scores += final_score
         
-        return (True, '{:.2f}'.format(sum_scores), possible_plagiarism_texts) if (sum_scores >= 0.05) else (False, '{:.2f}'.format(sum_scores), "No plagiarism detected", possible_plagiarism_texts)
+        return (True, '{:.2f}'.format(sum_scores), possible_plagiarism_texts) if (sum_scores >= 0.15) else (False, '{:.2f}'.format(sum_scores), "No plagiarism detected", possible_plagiarism_texts)
