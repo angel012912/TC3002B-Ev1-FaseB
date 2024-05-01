@@ -8,6 +8,8 @@ Para la realización de esta evidencia se empleó el lenguaje de programación P
 ## Pre-requisitos
 Para poder ejecutar el programa se necesita tener instalado Python 3.8 o una versión superior.
 
+Tener instalado python con la version 3.10
+
 ## Instalación
 
 Para instalar las dependencias necesarias para ejecutar el programa, se tiene que ejecutar el siguiente comando en la terminal

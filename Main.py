@@ -54,9 +54,9 @@ class Main:
 if __name__ == '__main__':
     reference_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Data")
     evaluate_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "TestData")
-    model_weights_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Model", "lstm_model_weights.h5")
+    model_weights_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Model", "model.h5")
     tokenizer_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "Model", "tokenizer.pickle")
-    main = Main(reference_file_path)
+    main = Main(reference_file_path, model_weights_path, tokenizer_path)
     # pprint(main.compare_module.dictionary)
     result = main.compare(evaluate_file_path)
     pprint(result)

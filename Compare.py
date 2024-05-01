@@ -9,17 +9,20 @@ File or class that contains all functions to calculate the similitude between tw
 # Libraries
 from Preprocessing import Preprocessing
 from keras.models import load_model
+from keras.preprocessing.sequence import pad_sequences
 import pickle
 import random
 
 class Compare:
+
+    possible_plagiarism_types = ['active_passive', 'copy', 'different', 'paraphrase', 'tense']
 
     """
     Constructor for the class Compare, it initializes current text that is being analyzed
     an instance of the Preprocessing class, a given dictionary of texts to compare with
     and the list of n-grams of the text that is being analyzed.
     """
-    def __init__(self, dictionary, model_path="", tokenizer_path=""):
+    def __init__(self, dictionary, model_path="", tokenizer_path="", max_sequence_length=80):
         self.textToCompare = ''
         self.dictionary = dictionary
         self.text_sentences = []
@@ -27,8 +30,10 @@ class Compare:
         try:
             if not model_path or not tokenizer_path:
                 raise Exception("Model or tokenizer paths not found")
-            self.compare_model = self._load_model(model_path)
-            self.tokenizer = self._load_tokenizer(tokenizer_path)
+            model = self._load_model(model_path)
+            tokenizer = self._load_tokenizer(tokenizer_path)
+            self.compare_model = self._set_model(model)
+            self.tokenizer = self._set_tokenizer(tokenizer, max_sequence_length)
         except Exception as e:
             print(e)
             self.compare_model = self._set_default_model
@@ -42,11 +47,27 @@ class Compare:
         with open(tokenizer_path, "rb") as file:
             tokenizer = pickle.load(file)
         return tokenizer
+    
+    def _set_tokenizer(self, tokenizer, max_sequence_length=80):
+        def tokenize(sentence, max_sequence_length=max_sequence_length, tokenizer=tokenizer):
+          sequence = pad_sequences(tokenizer.texts_to_sequences([sentence]), maxlen=max_sequence_length)
+          return sequence
+        
+        return tokenize
+
+    def _set_model(self, model):
+        def model_predict(sequence1, sequence2, model=model):
+            prediction = model.predict([sequence1, sequence2])
+            is_plagiarism = max(prediction[0][0])
+            index_plagiarism_type = prediction[1][0].argmax()
+            plagiarism_type = self.possible_plagiarism_types[index_plagiarism_type] if is_plagiarism else None
+            return (is_plagiarism, plagiarism_type)
+
+        return model_predict
 
     def _set_default_model(self, sentence1, sentence2):
-        possible_plagiarism_types = ["Insert or replace sentences", "mess up sentences", "voice changes"]
         is_plagiarized = random.choice([0, 1])
-        plagiarism_type = random.choice(possible_plagiarism_types) if is_plagiarized else None
+        plagiarism_type = random.choice(self.possible_plagiarism_types) if is_plagiarized else None
         result = (is_plagiarized, plagiarism_type)
         return result
 
