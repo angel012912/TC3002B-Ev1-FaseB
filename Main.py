@@ -60,3 +60,4 @@ if __name__ == '__main__':
     # pprint(main.compare_module.dictionary)
     result = main.compare(evaluate_file_path)
     pprint(result)
+    pprint(main.compare_module.total_evaluations)
