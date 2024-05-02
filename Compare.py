@@ -130,7 +130,9 @@ class Compare:
                 array_sequence2.append(sentence2)
         score_list, plagiarism_type_list = self.get_similarity_score(array_sequence1, array_sequence2)
         plagiarism_type_list = set(plagiarism_type_list)
-        plagiarism_type_list.remove(self.POSSIBLE_PLAGIARISM_TYPES[2])
+        # Remove 'different' as plagiarism type
+        if self.POSSIBLE_PLAGIARISM_TYPES[2] in plagiarism_type_list:
+            plagiarism_type_list.remove(self.POSSIBLE_PLAGIARISM_TYPES[2])
         score_list = score_list.reshape(len(paragraph2), len(paragraph1))
         return (score_list, list(plagiarism_type_list))
 
@@ -152,22 +154,20 @@ class Compare:
         sum_scores = 0
         for key in self.dictionary:
             print("Comparing: ", text_path, " with: ", key) # Just for debugging. Remove this line
-            sentence_scores = []
             final_score = 0
             original_text_sentences = self.dictionary[key]
             actual_text_sentences = self.text_sentences
             similarities_matrix, plagiarisms_detected = self.get_similarity_matrix(original_text_sentences, actual_text_sentences)
-            mean_score = 0
+            sum_score = 0
             for sentence in similarities_matrix:
                 if len(sentence) == 0:
                     mean_score += 0
                     continue
                 sentence_score = max(sentence)
-                mean_score += sentence_score / len(sentence)
-            mean_score = (mean_score / (len(similarities_matrix)))
-            sentence_scores.append(mean_score)
-            final_score = round(sum(sentence_scores) / len(sentence_scores), 2)
-            if final_score > 0.01:
+                sum_score += sentence_score
+            final_score = (sum_score / (len(similarities_matrix)))
+            final_score = round(final_score, 2)
+            if final_score > 0.2:
                 plagiarism_info = (key, final_score, plagiarisms_detected)
                 possible_plagiarism_texts.append(plagiarism_info)
                 sum_scores += final_score

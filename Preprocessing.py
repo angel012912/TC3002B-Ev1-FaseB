@@ -45,7 +45,7 @@ class Preprocessing:
                 final_headline += c
         self.current_text = final_headline.lower()
         return self.current_text
-    
+
     """
     Sentence Separation Function, separates the current text into a list of sentences
     """
@@ -83,9 +83,10 @@ class Preprocessing:
     functions of the rest of the class. N-grams are defined from 2 to 6.
     """
     def preprocess_data(self):
-        self.to_lower_without_punctuation()
+        # self.to_lower_without_punctuation()
         self.sentence_separation()
-        self.stopword_removal()
-        self.lemmatize_words()
-        self.recreate_sentences()
+
+        # self.stopword_removal()
+        # self.lemmatize_words()
+        # self.recreate_sentences()
         return self.sentences
