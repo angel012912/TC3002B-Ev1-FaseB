@@ -18,8 +18,6 @@ class Compare:
 
     POSSIBLE_PLAGIARISM_TYPES = ['active_passive', 'copy', 'different', 'paraphrase', 'tense']
 
-    total_evaluations = 0
-
     """
     Constructor for the class Compare, it initializes current text that is being analyzed
     an instance of the Preprocessing class, a given dictionary of texts to compare with
@@ -114,7 +112,6 @@ class Compare:
         sentence1_tokenized = self.tokenizer(sentence1)
         sentence2_tokenized = self.tokenizer(sentence2)
         result = self.compare_model(sentence1_tokenized, sentence2_tokenized)
-        self.total_evaluations += 1
         return result
 
     """
@@ -130,7 +127,6 @@ class Compare:
                 array_sequence2.append(sentence2)
         score_list, plagiarism_type_list = self.get_similarity_score(array_sequence1, array_sequence2)
         plagiarism_type_list = set(plagiarism_type_list)
-        # Remove 'different' as plagiarism type
         if self.POSSIBLE_PLAGIARISM_TYPES[2] in plagiarism_type_list:
             plagiarism_type_list.remove(self.POSSIBLE_PLAGIARISM_TYPES[2])
         score_list = score_list.reshape(len(paragraph2), len(paragraph1))
@@ -153,7 +149,6 @@ class Compare:
         possible_plagiarism_texts = []
         sum_scores = 0
         for key in self.dictionary:
-            print("Comparing: ", text_path, " with: ", key) # Just for debugging. Remove this line
             final_score = 0
             original_text_sentences = self.dictionary[key]
             actual_text_sentences = self.text_sentences
@@ -167,9 +162,9 @@ class Compare:
                 sum_score += sentence_score
             final_score = (sum_score / (len(similarities_matrix)))
             final_score = round(final_score, 2)
-            if final_score > 0.2:
+            if final_score >= 0.2:
                 plagiarism_info = (key, final_score, plagiarisms_detected)
                 possible_plagiarism_texts.append(plagiarism_info)
                 sum_scores += final_score
         
-        return (True, '{:.2f}'.format(sum_scores), possible_plagiarism_texts) if (sum_scores >= 0.15) else (False, '{:.2f}'.format(sum_scores), "No plagiarism detected", possible_plagiarism_texts)
+        return (True, '{:.2f}'.format(sum_scores), possible_plagiarism_texts) if (sum_scores >= 0.45) else (False, '{:.2f}'.format(sum_scores), "No plagiarism detected", possible_plagiarism_texts)
