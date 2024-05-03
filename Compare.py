@@ -18,12 +18,31 @@ class Compare:
 
     POSSIBLE_PLAGIARISM_TYPES = ['active_passive', 'copy', 'different', 'paraphrase', 'tense']
 
-    """
-    Constructor for the class Compare, it initializes current text that is being analyzed
-    an instance of the Preprocessing class, a given dictionary of texts to compare with
-    and the list of n-grams of the text that is being analyzed.
-    """
     def __init__(self, dictionary, model_path="", tokenizer_path="", max_sequence_length=80):
+        """
+        Initializes the object with the provided parameters.
+
+        Args:
+            dictionary (dict): The dictionary used for comparison.
+            model_path (str, optional): The path to the comparison model file. Defaults to "".
+            tokenizer_path (str, optional): The path to the tokenizer file. Defaults to "".
+            max_sequence_length (int, optional): The maximum sequence length for tokenization. Defaults to 80.
+
+        Attributes:
+            textToCompare (str): Holds the text to compare.
+            dictionary (dict): The dictionary used for comparison.
+            text_sentences (list): A list to store sentences extracted from text.
+            preproccess_module (Preprocessing): An instance of Preprocessing class.
+            compare_model (Model): The loaded comparison model.
+            tokenizer (Tokenizer): The loaded tokenizer.
+
+        Raises:
+            Exception: If model_path or tokenizer_path are not provided.
+
+        Example:
+            Initialize the object with a dictionary and model files:
+            comparer = Comparer(dictionary, model_path='model.h5', tokenizer_path='tokenizer.pickle')
+        """
         self.textToCompare = ''
         self.dictionary = dictionary
         self.text_sentences = []
@@ -41,15 +60,51 @@ class Compare:
             self.tokenizer = self._set_default_tokenizer
     
     def _load_model(self, model_path):
+        """
+        Loads the comparison model from the provided path.
+
+        Args:
+            model_path (str): The path to the comparison model file.
+
+        Returns:
+            Model: The loaded comparison model.
+
+        Example:
+            model = self._load_model('model.bin')
+        """
         model = load_model(model_path)
         return model
     
     def _load_tokenizer(self, tokenizer_path):
+        """
+        Loads the tokenizer from the provided path.
+
+        Args:
+            tokenizer_path (str): The path to the tokenizer file.
+
+        Returns:
+            Tokenizer: The loaded tokenizer.
+
+        Example:
+            tokenizer = self._load_tokenizer('tokenizer.bin')
+        """
         with open(tokenizer_path, "rb") as file:
             tokenizer = pickle.load(file)
         return tokenizer
     
     def _set_tokenizer(self, tokenizer, max_sequence_length=80):
+        """
+        Loads the tokenizer from the provided path.
+
+        Args:
+            tokenizer_path (str): The path to the tokenizer file.
+
+        Returns:
+            Tokenizer: The loaded tokenizer.
+
+        Example:
+            tokenizer = self._load_tokenizer('tokenizer.bin')
+        """
         def tokenize(sentence, max_sequence_length=max_sequence_length, tokenizer=tokenizer):
           if type(sentence) == str:
               sentence = [sentence]
@@ -59,6 +114,19 @@ class Compare:
         return tokenize
 
     def _set_model(self, model):
+        """
+        Sets up the model prediction function for comparing sentences.
+
+        Args:
+            model (Model): The loaded comparison model.
+
+        Returns:
+            function: A function for predicting plagiarism.
+
+        Example:
+            predict_func = self._set_model(model)
+            prediction = predict_func(sequence1, sequence2)
+        """
         def model_predict(sequence1, sequence2, model=model):
             prediction = model.predict([sequence1, sequence2], verbose=0)
             is_plagiarism_list = np.array(prediction[0])
@@ -68,18 +136,43 @@ class Compare:
         return model_predict
 
     def _set_default_model(self, sentence1, sentence2):
+        """
+        Sets up the default model function for generating random plagiarism predictions.
+
+        Args:
+            sentence1 (str): First sentence.
+            sentence2 (str): Second sentence.
+
+        Returns:
+            tuple: A tuple containing plagiarism prediction.
+
+        Example:
+            prediction = self._set_default_model('Sentence 1', 'Sentence 2')
+        """
         is_plagiarized = random.choice([0, 1])
         plagiarism_type = random.choice(self.POSSIBLE_PLAGIARISM_TYPES) if is_plagiarized else None
         result = (is_plagiarized, plagiarism_type)
         return result
 
     def _set_default_tokenizer(self, sentence):
+        """
+        Sets up the default tokenizer function that returns the input sentence as is.
+
+        Args:
+            sentence (str): Input sentence.
+
+        Returns:
+            str: The input sentence.
+
+        Example:
+            tokenized_sentence = self._set_default_tokenizer('Sample sentence')
+        """
         return sentence
     
-    """
-    Read Text Function, reads a text file according to the file path given as a string.
-    """
     def read_text(self, text_path):
+        """
+        Read Text Function, reads a text file according to the file path given as a string.
+        """
         if not text_path.endswith(".txt"):
             raise Exception("The file is not a .txt file") 
         file = open(text_path, "r", encoding="utf-8")
@@ -90,23 +183,30 @@ class Compare:
         file.close()
         return self.textToCompare
 
-    """
-    Preprocess Data Function, preprocesses the data of the saved text using the
-    functions in the Preprocessing class.
-    """
     def preprocess_data(self):
+        """
+        Preprocess Data Function, preprocesses the data of the saved text using the
+        functions in the Preprocessing class.
+        """
         self.preproccess_module.set_text(self.textToCompare)
         self.preproccess_module.preprocess_data()
         self.text_sentences = self.preproccess_module.sentences
         return self.text_sentences
 
-    """
-    Get Similarity Score Function, calculates the similarity score between two 
-    sentences according to their given list of n-grams. The score is calculated
-    by dividing the number of n-grams that are present in both sentences by the
-    total number of n-grams in both sentences. 
-    """
     def get_similarity_score(self, sentence1, sentence2):
+        """
+        Calculates the similarity score between two sentences.
+
+        Args:
+            sentence1 (str): First sentence.
+            sentence2 (str): Second sentence.
+
+        Returns:
+            tuple: A tuple containing the similarity score and plagiarism type.
+
+        Example:
+            similarity_score = self.get_similarity_score('Sentence 1', 'Sentence 2')
+        """
         if not sentence1 or not sentence2:
             return (0, None)
         sentence1_tokenized = self.tokenizer(sentence1)
@@ -114,11 +214,20 @@ class Compare:
         result = self.compare_model(sentence1_tokenized, sentence2_tokenized)
         return result
 
-    """
-    Get Similarity Matrix Function, calculates the similarity matrix between two
-    given paragraphs, using the similarity score function.
-    """
     def get_similarity_matrix(self, paragraph1, paragraph2):
+        """
+        Generates a similarity matrix between two paragraphs.
+
+        Args:
+            paragraph1 (list): List of sentences in the first paragraph.
+            paragraph2 (list): List of sentences in the second paragraph.
+
+        Returns:
+            tuple: A tuple containing the similarity score matrix and plagiarism types.
+
+        Example:
+            similarity_matrix, plagiarism_types = self.get_similarity_matrix(paragraph1, paragraph2)
+        """
         array_sequence2 = []
         array_sequence1 = []
         for sentence2 in paragraph2:
@@ -132,15 +241,22 @@ class Compare:
         score_list = score_list.reshape(len(paragraph2), len(paragraph1))
         return (score_list, list(plagiarism_type_list))
 
-    """
-    Compare Function, compares the text that was read and preprocessed with the
-    texts in the dictionary, calculating the mean of each similarity matrix 
-    between the analyzed text and each text from the dictionary. The function
-    returns a boolean value that indicates if the text is plagiarized, the sum
-    of the scores of the possible plagiarism and a list of the possible
-    plagiarism texts.
-    """
     def compare(self, text_path):
+        """
+        Compares the text with the provided dictionary.
+
+        Args:
+            text_path (str): The path to the text file.
+
+        Returns:
+            tuple: A tuple containing the result of the comparison.
+
+        Raises:
+            Exception: If there's an error reading the text or preprocessing the data.
+
+        Example:
+            result = self.compare('text.txt')
+        """
         try:
             self.read_text(text_path)
         except Exception as e:
