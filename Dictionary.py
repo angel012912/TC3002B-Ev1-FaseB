@@ -12,20 +12,20 @@ from Preprocessing import Preprocessing
 
 class Dictionary:
 
-    """
-    Constructor for the class Dictionary, it initializes the dictionary of the tool
-    the current text that is being processed an instance of the Preprocessing class.
-    """
     def __init__(self):
+        """
+        Constructor for the class Dictionary, it initializes the dictionary of the tool
+        the current text that is being processed an instance of the Preprocessing class.
+        """
         self.dictionary = {}
         self.current_text = ''
         self.preprocess_module = Preprocessing()
 
-    """
-    Document Reading Function, reads a text file according to the file and folder
-    path given as strings, it preprocesses the data and updates the dictionary.
-    """
     def text_reading(self, text_path, folder_path=''):
+        """
+        Document Reading Function, reads a text file according to the file and folder
+        path given as strings, it preprocesses the data and updates the dictionary.
+        """
         file = open(folder_path+"/"+text_path, "r", encoding="utf-8") if folder_path else open(text_path, "r", encoding="utf-8")
         content = file.read()
         if content == '':
@@ -36,11 +36,11 @@ class Dictionary:
         file.close()
         return self.current_text
     
-    """
-    Folder Text Reading Function, reads all the text files in the folder of the
-    path given as a string.    
-    """
     def folder_text_reading(self, folder_path):
+        """
+        Folder Text Reading Function, reads all the text files in the folder of the
+        path given as a string.    
+        """
         if not os.listdir(folder_path):
             raise Exception("The folder is empty")
         content_readed_list = []
@@ -55,18 +55,18 @@ class Dictionary:
             raise Exception("The folder has no text files")
         return content_readed_list
     
-    """
-    Preprocess Data Function, preprocesses the data of the saved text using the
-    functions in the Preprocessing class.
-    """
     def preprocess_data(self):
+        """
+        Preprocess Data Function, preprocesses the data of the saved text using the
+        functions in the Preprocessing class.
+        """
         self.preprocess_module.set_text(self.current_text)
         self.preprocess_module.preprocess_data()
     
-    """
-    Update Dictionary Function, updates the dictionary with the n-grams of the
-    text that was just processed.
-    """
     def update_dictionary(self, text_path):
-        self.dictionary[text_path] = self.preprocess_module.n_grams
+        """
+        Update Dictionary Function, updates the dictionary with the n-grams of the
+        text that was just processed.
+        """
+        self.dictionary[text_path] = self.preprocess_module.sentences
         return self.dictionary

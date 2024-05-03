@@ -1,1 +1,0 @@
-The computational process of the present invention is based on the following principles. This methods of n-gram is as follows. First, the n-gram model is trained on a large corpus of text. Then, the model is used to predict the next word in a sentence given the previous words in this process at this sentence. If i write more words in this sentence, then will be accurate. 

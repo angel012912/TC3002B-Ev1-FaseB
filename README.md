@@ -3,10 +3,10 @@
 ## Descripción
 En este repositorio se encuentra el código fuente de la Evidencia 1. Análisis de similitud empleando NLP.
 
-Para la realización de esta evidencia se empleó el lenguaje de programación Python, en el cuál se desarrolló un algoritmo basado en n-gramas para calcular la similitud entre dos textos y de esta forma poder determinar si un texto contiene plagio de otro(s).
+Para la realización de esta evidencia se empleó el lenguaje de programación Python, en el cuál se desarrolló un modelo de inteligencia artificial basado en capas de LSTM para determinar la similitud entre dos textos y de esta forma poder determinar si un texto contiene plagio de otro(s) y, asimismo, especificar el tipo de plagio.
 
 ## Pre-requisitos
-Para poder ejecutar el programa se necesita tener instalado Python 3.8 o una versión superior.
+Para poder ejecutar el programa se necesita tener instalado Python 3.10.
 
 ## Instalación
 
@@ -49,36 +49,34 @@ Si se requiere modificar los archivos a evaluar se tiene que modificar de la sig
 
 Se agrega el archivo en una ubicación específica
 
-Se mofiica la línea 51 y 52 del archivo `Main.py` de la siguiente manera.
+Se mofiica la línea 51 del archivo `Main.py` de la siguiente manera.
 
 ### Actualmente
 ```python
 evaluate_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "TestData")
-result = main.compare_folder(evaluate_file_path
 ```
 
 ### Modificación
 ```python
 evaluate_file_path = "ruta_del_archivo"
-result = main.compare(evaluate_file_path)
 ```
 
 ### En el caso de querer evaluar multiples archivos
 
 Se agrega la carpeta con los archivos en una ubicación específica
 
-Se mofiica la línea 51 y 52 del archivo `Main.py` de la siguiente manera.
+Se mofiica la línea 51 del archivo `Main.py` de la siguiente manera.
 
 ### Actualmente
 ```python
 evaluate_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "TestData")
-result = main.compare_folder(evaluate_file_path)
+result = main.compare(evaluate_file_path)
 ```
 
 ### Modificación
 ```python
 evaluate_file_path = "ruta_de_la_carpeta"
-result = main.compare_folder(evaluate_file_path)
+result = main.compare(evaluate_file_path)
 ```
 
 ## Ejecución
